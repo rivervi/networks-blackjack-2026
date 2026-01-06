@@ -1,0 +1,8 @@
+﻿__pycache__/
+.idea/
+.venv/
+env/
+*.pyc
+*.log
+Thumbs.db
+Desktop.ini
