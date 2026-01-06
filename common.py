@@ -23,9 +23,7 @@ import time
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
-# =========================
 # Protocol constants
-# =========================
 MAGIC_COOKIE = 0xABCDDCBA
 MAGIC_COOKIE_BYTES = struct.pack("!I", MAGIC_COOKIE)
 
@@ -49,9 +47,7 @@ PAYLOAD_STRUCT = struct.Struct("!IB5sBHB")   # cookie, type, decision, result, r
 SUITS = ["Heart", "Diamond", "Club", "Spade"]
 
 
-# =========================
 # Card & helpers
-# =========================
 @dataclass(frozen=True)
 class Card:
     rank: int  # 1..13
@@ -76,9 +72,7 @@ def hand_total_simplified(hand: list[Card]) -> int:
     return sum(c.points_simplified() for c in hand)
 
 
-# =========================
 # Fixed-length names
-# =========================
 def _fixed_name_bytes(name: str) -> bytes:
     """Encode name to exactly 32 bytes, padded with 0x00 or truncated."""
     raw = name.encode("utf-8", errors="ignore")[:32]
@@ -90,9 +84,8 @@ def _name_from_fixed(b: bytes) -> str:
     return b.split(b"\x00", 1)[0].decode("utf-8", errors="replace")
 
 
-# =========================
 # Packet packing/unpacking
-# =========================
+
 def pack_offer(tcp_port: int, server_name: str) -> bytes:
     return OFFER_STRUCT.pack(MAGIC_COOKIE, TYPE_OFFER, tcp_port, _fixed_name_bytes(server_name))
 
@@ -150,9 +143,8 @@ def unpack_payload(data: bytes) -> Optional[Tuple[bytes, int, Card]]:
     return decision5, result, card
 
 
-# =========================
 # Buffered socket reader
-# =========================
+
 class SocketBuffer:
     """
     A small buffered reader around a TCP socket that helps us:
@@ -254,9 +246,8 @@ class SocketBuffer:
         self.buf.extend(chunk)
 
 
-# =========================
 # Misc utilities
-# =========================
+
 def safe_local_ip() -> str:
     """
     Best-effort way to get a non-loopback local IP for printing.
