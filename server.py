@@ -44,9 +44,8 @@ DECISION_STAND = b"Stand"
 SERVER_DECISION_FILL = b"-----"
 
 
-# =========================
 # Game mechanics
-# =========================
+
 class Deck:
     def __init__(self) -> None:
         self.cards: List[Card] = [Card(rank=r, suit=s) for s in range(4) for r in range(1, 14)]
@@ -103,9 +102,8 @@ class ClientStats:
         )
 
 
-# =========================
 # Network: UDP offers
-# =========================
+
 def broadcast_offers(stop_event: threading.Event, tcp_port: int, server_name: str, interval: float) -> None:
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     udp.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -127,9 +125,8 @@ def broadcast_offers(stop_event: threading.Event, tcp_port: int, server_name: st
         pass
 
 
-# =========================
 # Flexible request / decision parsing
-# =========================
+
 def read_request_flexible(rb: SocketBuffer, request_timeout: float) -> Optional[Tuple[int, str]]:
     """
     Accepts:
@@ -211,9 +208,8 @@ def read_decision_flexible(rb: SocketBuffer, decision_timeout: float) -> bytes:
     return DECISION_STAND
 
 
-# =========================
 # Game I/O helpers
-# =========================
+
 def send_card(sock: socket.socket, card: Card, result: int = RESULT_ONGOING) -> None:
     msg = pack_payload(SERVER_DECISION_FILL, result, card)
     sock.sendall(msg)
@@ -224,9 +220,8 @@ def send_result(sock: socket.socket, result: int) -> None:
     sock.sendall(msg)
 
 
-# =========================
 # Round logic
-# =========================
+
 def play_one_round(conn: socket.socket, rb: SocketBuffer, stats: ClientStats, decision_timeout: float) -> None:
     deck = Deck()
     player: List[Card] = []
@@ -328,9 +323,8 @@ def play_one_round(conn: socket.socket, rb: SocketBuffer, stats: ClientStats, de
     stats.record_result(result, player_total, dealer_total, False, dealer_bust, player_hits)
 
 
-# =========================
 # Client handler
-# =========================
+
 def handle_client(conn: socket.socket, addr: Tuple[str, int], args: argparse.Namespace) -> None:
     client_ip, client_port = addr
     rb = SocketBuffer(conn)
@@ -380,9 +374,8 @@ def handle_client(conn: socket.socket, addr: Tuple[str, int], args: argparse.Nam
         print(f"[TCP] Connection with '{client_name}' closed\n")
 
 
-# =========================
 # Main
-# =========================
+
 def banner(name: str) -> None:
     print("===============================================")
     print("🃏  BLACKJACK SERVER  🃏")
