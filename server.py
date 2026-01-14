@@ -1,13 +1,4 @@
-#!/usr/bin/env python3
-"""
-server.py — Blackjack server (dealer), upgraded for:
-- Better timeouts (no random disconnects when a user pauses)
-- Compatibility with strict binary protocol AND tolerant text fallbacks
-- Cleaner logs + fun output
-- Per-client stats
 
-Runs forever until Ctrl+C.
-"""
 
 from __future__ import annotations
 
