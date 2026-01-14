@@ -1,13 +1,4 @@
-#!/usr/bin/env python3
-"""
-client.py — Blackjack client (player), upgraded for:
-- Better resilience and error handling
-- Works with strict binary servers AND tolerates mild legacy behavior
-- Fun output + rich statistics
-- --direct 127.0.0.1:PORT for single-computer testing without UDP
 
-Runs forever until Ctrl+C.
-"""
 
 from __future__ import annotations
 
@@ -36,9 +27,7 @@ DECISION_HIT = b"Hittt"
 DECISION_STAND = b"Stand"
 
 
-# =========================
-# Stats
-# =========================
+
 @dataclass
 class SessionStats:
     rounds: int = 0
@@ -90,9 +79,7 @@ class SessionStats:
         )
 
 
-# =========================
-# UI helpers
-# =========================
+
 def result_str(res: int) -> str:
     return {RESULT_WIN: "WIN 🏆", RESULT_LOSS: "LOSS ☠️", RESULT_TIE: "TIE 🤝"}.get(res, f"RES({res})")
 
@@ -128,9 +115,7 @@ def auto_decision(total: int) -> bytes:
     return DECISION_HIT if total < 17 else DECISION_STAND
 
 
-# =========================
-# Network receive: payload with tolerance
-# =========================
+
 def recv_payload(rb: SocketBuffer, timeout: float) -> Tuple[bytes, int, Card]:
     """
     Receives one payload. If invalid/corrupt, raises ValueError.
@@ -142,9 +127,7 @@ def recv_payload(rb: SocketBuffer, timeout: float) -> Tuple[bytes, int, Card]:
     return parsed
 
 
-# =========================
-# Offer listening
-# =========================
+
 def listen_for_offer() -> Tuple[str, int, str]:
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -168,9 +151,7 @@ def listen_for_offer() -> Tuple[str, int, str]:
         return ip, tcp_port, server_name
 
 
-# =========================
-# Gameplay
-# =========================
+
 def play_session(server_ip: str, tcp_port: int, team_name: str, rounds: int, timeout: float, autopilot: bool) -> None:
     print(f"[TCP] Connecting to server {server_ip}:{tcp_port} ...")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -287,9 +268,7 @@ def play_session(server_ip: str, tcp_port: int, team_name: str, rounds: int, tim
     print("\n" + stats.summary())
 
 
-# =========================
-# Direct connect parsing
-# =========================
+
 def parse_direct(d: str) -> Tuple[str, int]:
     # format: IP:PORT
     if ":" not in d:
@@ -299,9 +278,7 @@ def parse_direct(d: str) -> Tuple[str, int]:
     return ip, port
 
 
-# =========================
-# Main
-# =========================
+
 def banner(name: str) -> None:
     print("===============================================")
     print("🎰  BLACKJACK CLIENT  🎰")
